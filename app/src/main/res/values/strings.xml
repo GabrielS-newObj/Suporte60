@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Suporte60+</string>
+    <string name="support_60">Suporte 60+</string>
+    <string name="loadingInitialMsg">Estamos organizando tudo aqui</string>
+    <string name="loading">[Carregando...]</string>
+    <string name="erro_conexao">Erro de conexão.</string>
+    <string name="erro_telefone_invalido">Informe um telefone válido.</string>
+    <string name="erro_carregar_mensagens">Erro ao carregar mensagens.</string>
+    <string name="erro_carregar_chamados">Erro ao carregar chamados.</string>
+    <string name="lista_vazia">Lista vazia</string>
+    <string name="contato_excluido">Contato excluído.</string>
+    <string name="notif_titulo_padrao">Novo Pedido de Suporte</string>
+    <string name="notif_corpo_padrao">Um usuário enviou uma mensagem.</string>
+    <string name="notif_corpo_falha_ia">A IA falhou repetidamente ao atender um cliente.</string>
+    <string name="notif_msg_limit">O cliente atingiu 10 mensagens com a IA.
+</string>
+    <string name="aviso_atendimento_ia">“Esse atendimento é feito por IA. Nosso suporte entrará em contato após algumas tentativas. O limite de espera do nosso serviço para recebimento entre uma mensagem e outra é de 30min. Nosso horário de atendimento é das 7h da manhã até ás 20h da noite”</string>
+    <string name="erro_sem_internet">Sua internet caiu. Tentando reconectar…</string>
+    <string name="erro_envio_mensagem">Não foi possível enviar sua mensagem agora. Vamos tentar de novo.</string>
+    <string name="sessao_encerrada_ia">Sua sessão foi encerrada porque ficamos mais de 30 minutos sem receber uma nova mensagem. Se precisar de ajuda, é só entrar em contato novamente.</string>
+
+</resources>

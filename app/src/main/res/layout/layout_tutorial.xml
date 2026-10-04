@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:id="@+id/headerTutorial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#7AB4AD"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="📘 Como usar o app"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/btnFecharTutorial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="❌"
+            android:textSize="22sp"
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/headerTutorial">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/bg_balao_mensagem"
+                android:padding="12dp" android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="💬 1. Escreva sua mensagem" android:textStyle="bold"
+                    android:textSize="18sp" android:textColor="#1B5E20" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Toque no campo de texto, digite sua dúvida e aperte o botão de enviar."
+                    android:textSize="16sp" android:textColor="#000000" android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="#FFF3CD"
+                android:padding="12dp" android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🎤 2. Prefere falar?" android:textStyle="bold"
+                    android:textSize="18sp" android:textColor="#7A5B00" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Toque 1 vez no microfone para gravar. Toque na lixeira 🗑️ para cancelar, ou no aviãozinho: "
+                    android:textSize="16sp" android:textColor="#000000" />
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="21dp"
+                    android:contentDescription="send button"
+                    android:background="@drawable/bg_caixa_textomensag"
+                    android:src="@android:drawable/ic_menu_send"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=" para enviar o áudio."
+                    android:textSize="16sp" android:textColor="#000000" />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/bg_balao_usuario"
+                android:padding="12dp" android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🤖 3. Quem responde primeiro?" android:textStyle="bold"
+                    android:textSize="18sp" android:textColor="#FFFFFF" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Um assistente automático (IA) te atende primeiro. Se não resolver, um atendente de verdade assume a conversa."
+                    android:textSize="16sp" android:textColor="#FFFFFF" android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="#E3F5E0"
+                android:padding="12dp" android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="⏰ 4. Horário e espera" android:textStyle="bold"
+                    android:textSize="18sp" android:textColor="#1B5E20" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Atendemos das 7h às 20h. Se você demorar mais de 30 minutos para responder, a conversa recomeça do início."
+                    android:textSize="16sp" android:textColor="#000000" android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="#4DE800" android:padding="12dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🔒 5. Sua segurança" android:textStyle="bold"
+                    android:textSize="18sp" android:textColor="#000000" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nunca pedimos senha nem para instalar programas. Se pedirem isso, desconfie!"
+                    android:textSize="16sp" android:textColor="#000000" android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

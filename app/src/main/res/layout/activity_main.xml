@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  CORREÇÃO: no rascunho original este arquivo tinha 3 elementos "soltos" fora
+  da LinearLayout raiz (a própria LinearLayout do topo, depois um
+  RecyclerView e depois um RelativeLayout) — isso é XML inválido, um layout
+  Android só pode ter UM elemento raiz. Também não existia nenhum botão para
+  enviar mensagem de texto (só o microfone). Ambos os problemas foram
+  corrigidos abaixo.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- CORREÇÃO: em vez de fitsSystemWindows="true" (que empurraria a
+         listra toda para baixo e deixaria uma faixa da cor de FUNDO DO TEMA,
+         não da listra, atrás da barra de status), o fundo #7AB4AD abaixo
+         continua se estendendo por trás da barra de status — sem lacuna — e
+         só o conteúdo de dentro (botão "Tutorial", aviso de privacidade)
+         ganha um respiro extra, via MainActivity.aplicarInsetSuperior(). -->
+
+    <!-- Listra colorida do topo com o botão de Tutorial -->
+    <LinearLayout
+        android:id="@+id/topBarCliente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#7AB4AD"
+        android:padding="8dp">
+
+        <!-- CORREÇÃO: antes este botão e o aviso de privacidade abaixo
+             eram os 2 filhos de um FrameLayout, que empilha views uma
+             sobre a outra em vez de organizá-las em sequência. Como o
+             TextView do aviso vinha depois no XML (logo, desenhado por
+             cima) e tinha largura match_parent + fundo opaco (#FFF3CD),
+             ele cobria o botão "Tutorial" por completo — por isso ele
+             nunca aparecia na tela. Agora topBarCliente é um
+             LinearLayout vertical: o botão fica numa linha própria,
+             centralizado, e o aviso numa linha abaixo, sem sobreposição. -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAcaoTopo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="#4DE800"
+            android:text="Tutorial"
+            android:textColor="#000000"
+            app:cornerRadius="24dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="#BFDEBF"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:textColor="#070709"
+            android:text="🔒 Sua conversa é privada. Nosso suporte nunca pedirá senhas nem fará downloads no seu celular." />
+
+    </LinearLayout>
+
+
+    <TextView android:id="@+id/tvStatusConexao" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#FFC107" android:padding="12dp" android:textColor="#000000" android:textSize="16sp" android:textStyle="bold" android:gravity="center" android:visibility="gone" />
+
+
+    <!-- Lista de mensagens do chat -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMensagens"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#E3F5E0"
+        android:padding="8dp"
+        android:clipToPadding="false" />
+
+    <!-- Base: campo de texto e área de gravação de áudio.
+         android:id abaixo: o verde #1B5E20 se estende por trás da barra de
+         navegação/gestos, e o conteúdo ganha respiro extra via
+         MainActivity.aplicarInsetInferior(). -->
+    <RelativeLayout
+        android:id="@+id/barraInferiorCliente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="80dp"
+        android:background="#1B5E20"
+        android:padding="12dp">
+
+        <!-- Layout Escrita -->
+        <LinearLayout
+            android:id="@+id/layoutEscrita"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/etMensagem"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_caixa_textomensag"
+                android:hint="Escreva aqui..."
+                android:paddingHorizontal="16dp"
+                android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
+                android:imeOptions="actionSend"
+                android:maxLines="4" />
+
+            <!-- CORREÇÃO: botão que faltava para enviar mensagem de texto -->
+            <ImageButton
+                android:id="@+id/btnEnviarTexto"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_caixa_textomensag"
+                android:contentDescription="Enviar mensagem"
+                android:src="@android:drawable/ic_menu_send" />
+
+            <!-- Inicia gravação com 1 clique -->
+            <ImageButton
+                android:id="@+id/btnMicrofone"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_botao_audio"
+                android:contentDescription="Gravar áudio"
+                android:src="@android:drawable/ic_btn_speak_now" />
+        </LinearLayout>
+
+        <!-- Layout Gravando Áudio -->
+        <LinearLayout
+            android:id="@+id/layoutGravando"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_caixa_textoaudio"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/btnLixeiraAudio"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@null"
+                android:contentDescription="Cancelar áudio"
+                android:src="@android:drawable/ic_menu_delete"
+                app:tint="#FF0000" />
+
+            <TextView
+                android:id="@+id/tvTempoGravacao"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="00:00"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!-- Emoji de envio de avião -->
+            <ImageButton
+                android:id="@+id/btnEnviarAudio"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@null"
+                android:contentDescription="Enviar áudio"
+                android:src="@android:drawable/ic_menu_send"
+                app:tint="#FFFFFF" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

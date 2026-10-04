@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E3F5E0">
+
+    <!-- CORREÇÃO: em vez de fitsSystemWindows="true" (que deixaria uma
+         faixa da cor de fundo #E3F5E0 "pulando" de forma diferente da
+         listra), o fundo #7AB4AD da listra abaixo continua se estendendo
+         por trás da barra de status, e só o título "Atendimentos" ganha um
+         respiro extra, via AdminChamadosActivity.aplicarInsetSuperior(). A
+         lista (RecyclerView) recebe um respiro extra embaixo pelo mesmo
+         motivo, para o último item não ficar atrás da barra de
+         navegação/gestos. -->
+
+    <!-- Listra superior com o título da fila. O botão "Já atendido" saiu
+         daqui: agora ele só aparece dentro da conversa de cada contato
+         (activity_admin_chat.xml), então não tem mais risco de excluir o
+         contato errado por causa de uma seleção por toque longo. -->
+    <FrameLayout
+        android:id="@+id/topBarAdmin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#7AB4AD"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Atendimentos"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Encerra a sessão do atendente neste aparelho
+             (AdminChamadosActivity.confirmarSaida()). -->
+        <TextView
+            android:id="@+id/btnSair"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Sair"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+    </FrameLayout>
+
+    <!-- Lista principal de suporte (aumenta a cada usuário) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewChamados"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topBarAdmin"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false" />
+
+    <!-- Aparece só quando não há nenhum atendimento na fila
+         (controlado por AdminChamadosActivity.escutarChamados()). -->
+    <TextView
+        android:id="@+id/tvListaVazia"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topBarAdmin"
+        android:gravity="center"
+        android:text="@string/lista_vazia"
+        android:textColor="#616161"
+        android:textSize="22sp"
+        android:visibility="gone" />
+</RelativeLayout>

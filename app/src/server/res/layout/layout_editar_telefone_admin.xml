@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CORREÇÃO: diálogo do atendente para cadastrar/corrigir o telefone do
+     cliente, aberto a partir de AdminChatActivity.abrirEdicaoTelefoneDialog()
+     (uma das 2 opções do modal do botão de telefone). Visual baseado no
+     mesmo diálogo já usado no app cliente (layout_telefone_dialog.xml),
+     com um botão "Cancelar" a mais, já que aqui o atendente pode estar só
+     conferindo o número, sem necessariamente querer alterá-lo. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Editar telefone do cliente"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Use isto se o cliente não informou um número, ou se o número estiver errado ou desatualizado."
+        android:textSize="13sp"
+        android:textColor="#555555" />
+
+    <EditText
+        android:id="@+id/etTelefoneAdminDialog"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="phone"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_caixa_textotelefone"
+        android:paddingHorizontal="16dp"
+        android:hint="Ex: 11999999999" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSalvarTelefoneAdmin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#4DE800"
+        android:textColor="#000000"
+        android:text="Salvar" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancelarTelefoneAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:text="Cancelar"
+        android:textColor="#555555"
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
+
+</LinearLayout>
