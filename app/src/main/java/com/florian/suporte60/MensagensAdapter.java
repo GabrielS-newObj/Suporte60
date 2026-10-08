@@ -32,7 +32,6 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.Mens
     private String urlAudioAtual = null;
     private ImageButton botaoAudioAtual = null;
     private boolean isPausado = false;
-    // ids das mensagens que ainda não chegaram ao servidor (mostram 🕓)
     private final Set<String> idsPendentes = new HashSet<>();
 
     public MensagensAdapter(List<Mensagem> listaMensagens, boolean attendantMode) { this.listaMensagens = listaMensagens; this.attendantMode = attendantMode; }
@@ -50,13 +49,10 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.Mens
         Mensagem mensagem = listaMensagens.get(position);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.containerBalao.getLayoutParams();
 
-        // Dentro de onBindViewHolder, na parte do áudio:
         boolean isTocandoAgora = (position == posicaoTocando && mediaPlayer != null && mediaPlayer.isPlaying());
 
-        // LÓGICA DE ALINHAMENTO BASEADA NO CAMPO REMETENTE (Mais seguro do que boolean)
         boolean isMensagemMinha;
 
-        // Se o remetente for "usuario" (ou se não for IA/Atendente), a mensagem é do usuário.
         if ("ia".equals(mensagem.getRemetente()) || "atendente".equals(mensagem.getRemetente()) || mensagem.isEnviadaPeloAtendente()) {
             isMensagemMinha = false;
         } else {
@@ -64,48 +60,36 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.Mens
         }
 
         if (isMensagemMinha) {
-            // Mensagem enviada por mim -> Lado Direito (Verde Escuro)
             params.gravity = Gravity.END;
             holder.containerBalao.setBackgroundResource(R.drawable.bg_balao_usuario);
-            holder.tvTextoMensagem.setTextColor(0xFFFFFFFF); // Texto branco
+            holder.tvTextoMensagem.setTextColor(0xFFFFFFFF);
         } else {
-            // Mensagem recebida (IA ou Atendente) -> Lado Esquerdo (Branco/Cinza claro)
             params.gravity = Gravity.START;
             holder.containerBalao.setBackgroundResource(R.drawable.bg_balao_mensagem);
-            holder.tvTextoMensagem.setTextColor(0xFF000000); // Texto preto
+            holder.tvTextoMensagem.setTextColor(0xFF000000);
         }
 
         holder.containerBalao.setLayoutParams(params);
 
-        // LÓGICA DE EXIBIÇÃO: TEXTO OU ÁUDIO
-        // O tipo do balão (texto x áudio) depende do CONTEÚDO da mensagem,
-        // nunca do estado de reprodução — senão qualquer notifyDataSetChanged()
-        // (ex: nova mensagem chegando do Firebase) troca o balão que está
-        // tocando para texto e esconde o player no meio da reprodução.
         boolean isMensagemDeAudio = mensagem.getUrlAudio() != null && !mensagem.getUrlAudio().trim().isEmpty();
 
         if (!isMensagemDeAudio) {
-            // É uma mensagem de texto
             holder.tvTextoMensagem.setVisibility(View.VISIBLE);
             holder.layoutAudioPlayer.setVisibility(View.GONE);
             holder.tvDuracaoAudio.setVisibility(View.GONE);
             holder.tvTextoMensagem.setText(mensagem.getTexto());
         }
         else {
-            // É uma mensagem de áudio
             holder.tvTextoMensagem.setVisibility(View.GONE);
             holder.layoutAudioPlayer.setVisibility(View.VISIBLE);
             holder.tvDuracaoAudio.setVisibility(View.VISIBLE);
             holder.tvDuracaoAudio.setText(mensagem.getDuracaoAudio());
-            // Só o ícone play/pause depende do estado de reprodução
             holder.btnPlayPause.setImageResource(
                     isTocandoAgora ? android.R.drawable.ic_media_pause : android.R.drawable.ic_media_play);
         }
 
         holder.btnPlayPause.setOnClickListener(v -> tocarAudio(mensagem.getUrlAudio(), position, holder));
 
-        // STATUS DE ENVIO (estilo WhatsApp): só nas mensagens que EU enviei.
-        // 🕓 = ainda enviando / aguardando chegar;  ✅ = chegou ao servidor.
         boolean enviadaPorMim = attendantMode
                 ? (mensagem.isEnviadaPeloAtendente() && !"ia".equals(mensagem.getRemetente()))
                 : isMensagemMinha;
@@ -119,12 +103,10 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.Mens
         }
     }
 
-    /** Marca a mensagem como "enviando": mostra 🕓 no lugar do ✅. */
     public void marcarPendente(String id) {
         if (id != null) idsPendentes.add(id);
     }
 
-    /** A mensagem chegou ao servidor: troca 🕓 por ✅. Chamar na thread principal. */
     public void marcarEnviada(String id) {
         if (id == null || !idsPendentes.remove(id)) return;
         for (int i = 0; i < listaMensagens.size(); i++) {
@@ -135,7 +117,6 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.Mens
         }
     }
 
-    /** Só esquece o id (sem redesenhar) — usado ao trocar o balão provisório do áudio pelo definitivo. */
     public void esquecerPendente(String id) {
         if (id != null) idsPendentes.remove(id);
     }
@@ -146,7 +127,6 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.Mens
             return;
         }
 
-        // 1. Se for o mesmo áudio e estiver pausado, retoma
         if (urlAudio.equals(urlAudioAtual) && mediaPlayer != null && isPausado) {
             try {
                 mediaPlayer.start();
@@ -160,7 +140,6 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.Mens
             return;
         }
 
-        // 2. Se for o mesmo áudio e estiver tocando, pausa
         if (urlAudio.equals(urlAudioAtual) && mediaPlayer != null && mediaPlayer.isPlaying()) {
             try {
                 mediaPlayer.pause();
@@ -173,7 +152,6 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.Mens
             return;
         }
 
-        // 3. Novo áudio: limpa o anterior
         pararERecomporPlayer();
 
         try {
@@ -192,7 +170,6 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.Mens
             mediaPlayer.setOnPreparedListener(mp -> {
                 mp.start();
                 isPausado = false;
-                // Garante que atualiza o botão correto mesmo se houve scroll
                 if (botaoAudioAtual != null) {
                     botaoAudioAtual.setImageResource(android.R.drawable.ic_media_pause);
                 }
@@ -282,7 +259,7 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.Mens
 
     static class MensagemViewHolder extends RecyclerView.ViewHolder {
         LinearLayout containerBalao, layoutAudioPlayer;
-        TextView tvTextoMensagem, tvDuracaoAudio, tvCheckEnvio; // adicionado aqui
+        TextView tvTextoMensagem, tvDuracaoAudio, tvCheckEnvio;
         ImageButton btnPlayPause;
         SeekBar seekBarAudio;
         public MensagemViewHolder(@NonNull View itemView) {
@@ -293,6 +270,6 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.Mens
             btnPlayPause = itemView.findViewById(R.id.btnPlayPause);
             seekBarAudio = itemView.findViewById(R.id.seekBarAudio);
             tvDuracaoAudio = itemView.findViewById(R.id.tvDuracaoAudio);
-            tvCheckEnvio = itemView.findViewById(R.id.tvCheckEnvio); // adicionado aqui
+            tvCheckEnvio = itemView.findViewById(R.id.tvCheckEnvio);
         }
     }}

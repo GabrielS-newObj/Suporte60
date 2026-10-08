@@ -34,17 +34,13 @@ import com.google.firebase.messaging.RemoteMessage;
 
             Intent intent;
             try {
-                // Tenta encontrar a tela do servidor dinamicamente (para o app do Atendente)
                 Class<?> activityClass = Class.forName("com.florian.suporte60.AdminChamadosActivity");
                 intent = new Intent(this, activityClass);
             } catch (ClassNotFoundException e) {
-                // Se a classe não for encontrada (ou seja, está rodando no app do Cliente),
-                // ele redireciona para a tela principal padrão como fallback.
                 intent = new Intent(this, MainActivity.class);
             }
 
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-// ID único por chamado: sem usuarioId (ex.: caso de erro genérico), cai no ID padrão
 
             int notifyId = (usuarioId != null) ? usuarioId.hashCode() : 101;
             PendingIntent pendingIntent = PendingIntent.getActivity(this, notifyId, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);

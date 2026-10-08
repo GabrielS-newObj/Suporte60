@@ -6,18 +6,14 @@ public class Mensagem {
     private String texto;
     private boolean enviadaPeloAtendente;
     private String urlAudio;
-    private String duracaoAudio; // Novo campo
-    private String remetente; // ex: "usuario", "ia", "atendente"
+    private String duracaoAudio;
+    private String remetente;
     private long timestamp;
 
-    // Só local (@Exclude = não é gravado no Firebase): chave da mensagem no
-    // banco, ou "local-..." enquanto o áudio ainda sobe para o Cloudinary.
-    // O adapter usa o id para saber se a mensagem já chegou (✅) ou não (🕓).
     private String id;
 
     public Mensagem() {}
 
-    // Construtor para texto
     public Mensagem(String texto, boolean enviadaPeloAtendente) {
         this.texto = texto;
         this.enviadaPeloAtendente = enviadaPeloAtendente;
@@ -25,7 +21,6 @@ public class Mensagem {
         this.duracaoAudio = "";
     }
 
-    // Construtor para áudio
     public Mensagem(String texto, boolean enviadaPeloAtendente, String urlAudio, String duracaoAudio) {
         this.texto = texto;
         this.enviadaPeloAtendente = enviadaPeloAtendente;
@@ -33,7 +28,6 @@ public class Mensagem {
         this.duracaoAudio = duracaoAudio;
     }
 
-    // 2. Construtor para uso direto: new Mensagem(texto, "ia", System.currentTimeMillis())
     public Mensagem(String texto, String remetente, long timestamp) {
         this.texto = texto;
         this.remetente = remetente;

@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- CORREÇÃO: diálogo do atendente para cadastrar/corrigir o telefone do
-     cliente, aberto a partir de AdminChatActivity.abrirEdicaoTelefoneDialog()
-     (uma das 2 opções do modal do botão de telefone). Visual baseado no
-     mesmo diálogo já usado no app cliente (layout_telefone_dialog.xml),
-     com um botão "Cancelar" a mais, já que aqui o atendente pode estar só
-     conferindo o número, sem necessariamente querer alterá-lo. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

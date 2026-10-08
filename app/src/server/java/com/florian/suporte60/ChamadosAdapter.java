@@ -13,7 +13,6 @@ import java.util.List;
 public class ChamadosAdapter extends RecyclerView.Adapter<ChamadosAdapter.ChamadoViewHolder> {
     private List<Chamado> listaChamados;
     private OnChamadoClickListener listener;
-    // CORREÇÃO: Usar o ID do usuário para não perder a seleção quando a lista reordenar
 
     public interface OnChamadoClickListener {
         void onChamadoClick(Chamado chamado);
@@ -44,8 +43,6 @@ public class ChamadosAdapter extends RecyclerView.Adapter<ChamadosAdapter.Chamad
         holder.tvContadorSino.setText(String.valueOf(chamado.getMensagensNaoLidas()));
 
 
-
-        // Clique simples: Apenas abre o chat e marca como lida
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onChamadoClick(chamado);
         });

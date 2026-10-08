@@ -8,7 +8,7 @@ public class Chamado {
     private String status;
     private String telefone;
     private int mensagensNaoLidas;
-    private boolean lida; // <-- campo que faltava
+    private boolean lida;
 
     public int getMensagensNaoLidas() { return mensagensNaoLidas; }
 

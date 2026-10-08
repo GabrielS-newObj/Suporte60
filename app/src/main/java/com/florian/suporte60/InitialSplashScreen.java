@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 import com.florian.suporte60.BuildConfig;
 
 
-@SuppressLint("CustomSplashScreen") //for minSdk >= 30
+@SuppressLint("CustomSplashScreen")
 public class InitialSplashScreen extends ALayoutActivity {
 
     private final ExecutorService task = Executors.newSingleThreadExecutor();
@@ -34,24 +34,12 @@ public class InitialSplashScreen extends ALayoutActivity {
         isDataLoading = false;
 
         new Handler(Looper.getMainLooper()).post(() -> {
-            // CORREÇÃO: build "server" não mostra mais tela de login — vai
-            // direto para a fila de atendimento. A autenticação com o
-            // Firebase (exigida pelas regras do banco) agora acontece
-            // sozinha, em segundo plano, dentro de AdminChamadosActivity.
-            //
-            // AdminChamadosActivity só existe no source set "server" (não
-            // existe quando este mesmo arquivo, que é compartilhado, é
-            // compilado para o flavor "client"). Por isso a classe é
-            // resolvida via Class.forName (em runtime) em vez de uma
-            // referência direta "AdminChamadosActivity.class", que quebraria
-            // a compilação do build client.
             Intent intent;
             if (BuildConfig.FLAVOR.equals("server")) {
                 try {
                     Class<?> destino = Class.forName("com.florian.suporte60.AdminChamadosActivity");
                     intent = new Intent(InitialSplashScreen.this, destino);
                 } catch (ClassNotFoundException e) {
-                    // Não deveria acontecer num build "server" correto.
                     throw new RuntimeException("AdminChamadosActivity não encontrada no build server", e);
                 }
             } else {

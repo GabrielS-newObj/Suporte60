@@ -4,19 +4,6 @@
     android:layout_height="match_parent"
     android:background="#E3F5E0">
 
-    <!-- CORREÇÃO: em vez de fitsSystemWindows="true" (que deixaria uma
-         faixa da cor de fundo #E3F5E0 "pulando" de forma diferente da
-         listra), o fundo #7AB4AD da listra abaixo continua se estendendo
-         por trás da barra de status, e só o título "Atendimentos" ganha um
-         respiro extra, via AdminChamadosActivity.aplicarInsetSuperior(). A
-         lista (RecyclerView) recebe um respiro extra embaixo pelo mesmo
-         motivo, para o último item não ficar atrás da barra de
-         navegação/gestos. -->
-
-    <!-- Listra superior com o título da fila. O botão "Já atendido" saiu
-         daqui: agora ele só aparece dentro da conversa de cada contato
-         (activity_admin_chat.xml), então não tem mais risco de excluir o
-         contato errado por causa de uma seleção por toque longo. -->
     <FrameLayout
         android:id="@+id/topBarAdmin"
         android:layout_width="match_parent"
@@ -33,8 +20,6 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- Encerra a sessão do atendente neste aparelho
-             (AdminChamadosActivity.confirmarSaida()). -->
         <TextView
             android:id="@+id/btnSair"
             android:layout_width="wrap_content"
@@ -53,7 +38,6 @@
             android:textSize="16sp" />
     </FrameLayout>
 
-    <!-- Lista principal de suporte (aumenta a cada usuário) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewChamados"
         android:layout_width="match_parent"
@@ -63,8 +47,6 @@
         android:layout_marginTop="8dp"
         android:clipToPadding="false" />
 
-    <!-- Aparece só quando não há nenhum atendimento na fila
-         (controlado por AdminChamadosActivity.escutarChamados()). -->
     <TextView
         android:id="@+id/tvListaVazia"
         android:layout_width="match_parent"

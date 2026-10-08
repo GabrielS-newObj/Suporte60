@@ -3,9 +3,7 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
-// CORREÇÃO: lê a chave da Gemini do local.properties (arquivo que já está
-// no .gitignore, então a chave nunca vai pro Git) e expõe como
-// BuildConfig.GEMINI_API_KEY para o AssistenteIA.java poder usar.
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -13,18 +11,10 @@ if (localPropertiesFile.exists()) {
 }
 def geminiApiKey = localProperties.getProperty('GEMINI_API_KEY', '')
 
-// CORREÇÃO: mesmas credenciais do Cloudinary lidas do local.properties (não
-// vai pro Git), expostas como BuildConfig para CloudinaryUploader.java usar.
-// Ver instruções completas nos comentários de CloudinaryUploader.java.
+
 def cloudinaryCloudName = localProperties.getProperty('CLOUDINARY_CLOUD_NAME', '')
 def cloudinaryUploadPreset = localProperties.getProperty('CLOUDINARY_UPLOAD_PRESET', '')
 
-// SEGURANÇA: o build "server" NÃO embute mais e-mail/senha de admin no APK.
-// O atendente entra pela tela LoginAtendenteActivity (e-mail + senha de uma
-// conta individual do Firebase Authentication) e o Firebase mantém a sessão
-// no aparelho. As permissões de atendente ficam no banco, em
-// admins/{uid} = true (ver database.rules.json). As linhas ADMIN_EMAIL e
-// ADMIN_SENHA do local.properties não são mais usadas e podem ser apagadas.
 
 android {
     namespace = "com.florian.suporte60"
@@ -32,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId = "com.florian.suporte60"
-        minSdk = 30 //check InitialSplashScreen before update
+        minSdk = 30
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -52,21 +42,20 @@ android {
     flavorDimensions += "tipo"
 
     productFlavors {
-        // Versão do Cliente (será publicada na rede/Play Store)
+
         client {
             dimension "tipo"
             applicationId = "com.florian.suporte60.client"
             resValue "string", "app_name", "Suporte 60+"
         }
 
-        // Versão do Servidor/Atendente (uso exclusivo no seu aparelho)
+
         server {
             dimension "tipo"
             applicationId = "com.florian.suporte60.server"
             resValue "string", "app_name", "Suporte 60+ (Admin)"
         }
     }
-    // ---------------------------------------
 
 
     buildTypes {
@@ -100,8 +89,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-messaging'
-    // CORREÇÃO: firebase-storage removido (exige plano Blaze) — áudio agora
-    // sobe direto pro Cloudinary via OkHttp, ver CloudinaryUploader.java.
+
+
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.android.material:material:1.11.0")

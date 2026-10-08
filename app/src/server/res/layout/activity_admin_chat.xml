@@ -6,13 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Listra colorida do topo, com o nome do usuário atendido -->
-    <!-- CORREÇÃO: em vez de fitsSystemWindows (que empurra a listra toda
-         para baixo e deixa uma faixa da cor de fundo do tema, não da listra,
-         por trás da barra de status), o fundo #7AB4AD continua se estendendo
-         por trás da barra de status — sem lacuna — e só o CONTEÚDO de dentro
-         dela (nome + botão) recebe um respiro extra no topo, via
-         AdminChatActivity.aplicarInsetSuperior(). Ver essa Activity. -->
     <FrameLayout
         android:id="@+id/topBarAdminChat"
         android:layout_width="match_parent"
@@ -33,13 +26,6 @@
             android:textStyle="bold"
             tools:text="Cliente 1234"/>
 
-        <!-- CORREÇÃO: o telefone só podia ser discado a partir da lista
-             (AdminChamadosActivity), e mesmo assim exigia um toque longo
-             prévio para "selecionar" o contato — um passo escondido e fácil
-             de esquecer. Agora o ícone de ligar aparece direto AQUI, dentro
-             da conversa com o cliente: o atendente entra no chat e já pode
-             ligar, sem precisar voltar para a lista. Fica ao lado do "Já
-             atendido", os dois alinhados à direita. -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,14 +44,6 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
-            <!-- CORREÇÃO: o botão "Já atendido" agora vive aqui, dentro da conversa de
-                 UM contato específico (usuarioId já vem no Intent), em vez de na tela
-                 inicial com seleção por toque longo. Assim não tem como o atendente
-                 remover o contato errado: ele só aparece depois que você já entrou
-                 na conversa daquela pessoa.
-                 minHeight/minWidth garantem a área de toque de 48dp recomendada —
-                 com textSize 12sp e wrap_content o alvo ficava pequeno demais para
-                 quem tem pouca firmeza no toque. -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAdminJaAtendido"
                 android:layout_width="wrap_content"
@@ -81,11 +59,6 @@
         </LinearLayout>
     </FrameLayout>
 
-    <!-- CORREÇÃO: o AdminChatActivity já fazia findViewById(R.id.tvStatusConexao)
-         e chamava setVisibility() nele dentro de monitorarConexao(), mas esta
-         View não existia no layout — ou seja, a tela do chat do atendente
-         quebrava (NullPointerException) assim que o listener de conexão
-         disparava. Adicionada aqui igual à do app cliente. -->
     <TextView
         android:id="@+id/tvStatusConexao"
         android:layout_width="match_parent"
@@ -98,7 +71,6 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
-    <!-- Lista de mensagens do chat (mesmo adapter/layout do app cliente) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewMensagens"
         android:layout_width="match_parent"
@@ -108,17 +80,6 @@
         android:padding="8dp"
         android:clipToPadding="false" />
 
-    <!-- Base: campo de texto, microfone e área de gravação.
-         CORREÇÃO: o atendente só conseguia responder por texto — o botão de
-         áudio existia apenas no app do cliente (activity_main.xml). Aqui a
-         mesma estrutura foi replicada: "layoutEscrita" (texto + enviar +
-         microfone) e "layoutGravando" (lixeira + cronômetro + avião), que se
-         alternam durante a gravação. Ícones e drawables são os mesmos usados
-         no cliente.
-         android:id abaixo: mesmo raciocínio da listra do topo — o verde
-         #1B5E20 se estende por trás da barra de navegação/gestos, e só o
-         conteúdo de dentro ganha um respiro extra embaixo, via
-         AdminChatActivity.aplicarInsetInferior(). -->
     <RelativeLayout
         android:id="@+id/barraInferiorAdminChat"
         android:layout_width="match_parent"
@@ -127,7 +88,6 @@
         android:background="#1B5E20"
         android:padding="12dp">
 
-        <!-- Layout Escrita -->
         <LinearLayout
             android:id="@+id/layoutEscrita"
             android:layout_width="match_parent"
@@ -153,7 +113,6 @@
                 android:contentDescription="Enviar mensagem"
                 android:src="@android:drawable/ic_menu_send" />
 
-            <!-- Inicia gravação com 1 clique -->
             <ImageButton
                 android:id="@+id/btnMicrofone"
                 android:layout_width="64dp"
@@ -164,7 +123,6 @@
                 android:src="@android:drawable/ic_btn_speak_now" />
         </LinearLayout>
 
-        <!-- Layout Gravando Áudio -->
         <LinearLayout
             android:id="@+id/layoutGravando"
             android:layout_width="match_parent"
@@ -194,7 +152,6 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <!-- Emoji de envio de avião -->
             <ImageView
                 android:id="@+id/btnEnviarAudio"
                 android:layout_width="50dp"

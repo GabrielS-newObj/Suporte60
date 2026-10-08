@@ -17,7 +17,6 @@
         android:paddingVertical="12dp">
 
 
-        <!-- Visível apenas se for texto -->
         <TextView
             android:id="@+id/tvTextoMensagem"
             android:layout_width="wrap_content"
@@ -26,7 +25,6 @@
             android:textColor="#000000"
             android:textSize="24sp" />
 
-        <!-- Visível apenas se for áudio -->
         <LinearLayout
             android:id="@+id/layoutAudioPlayer"
             android:layout_width="220dp"
@@ -63,7 +61,6 @@
             android:textStyle="bold"
             android:visibility="gone" />
 
-        <!-- O layout_weight e margin garantem que o check fique no rodapé -->
         <TextView
             android:id="@+id/tvCheckEnvio"
             android:layout_width="match_parent"

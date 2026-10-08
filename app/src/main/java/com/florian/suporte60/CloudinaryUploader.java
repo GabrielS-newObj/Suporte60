@@ -21,10 +21,8 @@ import okhttp3.Response;
 public class CloudinaryUploader {
 
     public interface UploadCallback {
-        /** Chamado na UI thread quando o upload termina com sucesso. */
         void onSuccess(String urlSegura);
 
-        /** Chamado na UI thread quando o upload falha, por qualquer motivo. */
         void onFailure(String mensagemErro);
     }
 
@@ -41,9 +39,6 @@ public class CloudinaryUploader {
             return;
         }
 
-        // Cloudinary trata áudio dentro do endpoint "video" (não existe um
-        // endpoint separado só para áudio) — é o mesmo caminho que já estava
-        // (corretamente) anotado na função morta functions/index.js.
         String url = "https://api.cloudinary.com/v1_1/" + cloudName + "/video/upload";
 
         RequestBody requestBody = new MultipartBody.Builder()
@@ -72,8 +67,6 @@ public class CloudinaryUploader {
                 String corpo = response.body() != null ? response.body().string() : "";
 
                 if (!response.isSuccessful()) {
-                    // Erros comuns aqui: preset não é "unsigned", cloud name
-                    // errado, ou preset não existe.
                     postFailure(callback, "Cloudinary recusou o upload (HTTP " + response.code() + ")");
                     return;
                 }

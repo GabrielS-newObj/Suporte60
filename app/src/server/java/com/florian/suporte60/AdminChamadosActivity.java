@@ -47,9 +47,6 @@ public class AdminChamadosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_chamados);
         splashScreen.setKeepOnScreenCondition(() -> isKeepOnScreen);
 
-        // SEGURANÇA: sem credenciais embutidas no APK. A sessão vem do login
-        // do atendente (LoginAtendenteActivity), que o Firebase Auth mantém
-        // no aparelho. Sem sessão (ou com sessão anônima), vai para o login.
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser usuario = mAuth.getCurrentUser();
         if (usuario == null || usuario.isAnonymous()) {
@@ -65,9 +62,6 @@ public class AdminChamadosActivity extends AppCompatActivity {
             }
         }, 8000);
 
-        // Confere se a conta logada é mesmo de atendente (admins/{uid} = true)
-        // antes de ler a fila. Cobre também sessões antigas (ex.: a conta
-        // fixa de versões anteriores do app), que não têm esse registro.
         verificarPermissaoDeAtendente(usuario);
 
         findViewById(R.id.btnSair).setOnClickListener(v -> confirmarSaida());
@@ -82,12 +76,6 @@ public class AdminChamadosActivity extends AppCompatActivity {
         recyclerViewChamados = findViewById(R.id.recyclerViewChamados);
         tvListaVazia = findViewById(R.id.tvListaVazia);
 
-        // CORREÇÃO: mesmo raciocínio de AdminChatActivity — o fundo colorido
-        // da listra "Atendimentos" se estende por trás da barra de status, e
-        // só o texto ganha um respiro extra, em vez de deixar uma faixa da
-        // cor de fundo do tema atrás dos ícones. A lista também ganha um
-        // respiro extra embaixo, para o último item não ficar atrás da
-        // barra de navegação/gestos.
         aplicarInsetSuperior(findViewById(R.id.topBarAdmin));
         aplicarInsetInferior(recyclerViewChamados);
 
@@ -97,20 +85,11 @@ public class AdminChamadosActivity extends AppCompatActivity {
 
             @Override public void onChamadoClick(Chamado chamado) {
 
-                // CORREÇÃO: a chamada marcarComoLida(chamado) estava no fim
-                // de uma linha de comentário "//", ou seja, comentada junto —
-                // nunca executava, e o contador do sino só crescia. Restaurada
-                // como código de verdade. (O clique só abre a conversa; o ícone de
-                // ligar fica dentro de cada conversa.)
                 marcarComoLida(chamado);
 
                 Intent intent = new Intent(AdminChamadosActivity.this, AdminChatActivity.class);
                 intent.putExtra(AdminChatActivity.EXTRA_USUARIO_ID, chamado.getUsuarioId());
                 intent.putExtra(AdminChatActivity.EXTRA_NOME_USUARIO, chamado.getNomeUsuario());
-                // CORREÇÃO: telefone repassado para a conversa, onde agora
-                // existe um ícone de ligar próprio (ver activity_admin_chat.xml
-                // e AdminChatActivity.ligarParaCliente()). A tela inicial não
-                // tem mais ícone de ligar.
                 intent.putExtra(AdminChatActivity.EXTRA_TELEFONE, chamado.getTelefone());
                 startActivity(intent);
             }
@@ -119,15 +98,8 @@ public class AdminChamadosActivity extends AppCompatActivity {
         });
         recyclerViewChamados.setAdapter(chamadosAdapter);
 
-        // escutarChamados() só roda em iniciarSessaoDoAtendente(), depois
-        // que verificarPermissaoDeAtendente() confirmar admins/{uid}.
     }
 
-    /**
-     * Lê admins/{uid}. Só quem tem "true" ali é atendente. Para revogar o
-     * acesso de uma pessoa, basta apagar (ou pôr false) esse nó no console
-     * do Firebase — o efeito é imediato nas regras do banco.
-     */
     private void verificarPermissaoDeAtendente(FirebaseUser usuario) {
         FirebaseDatabase.getInstance().getReference("admins").child(usuario.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -157,8 +129,6 @@ public class AdminChamadosActivity extends AppCompatActivity {
 
     private void iniciarSessaoDoAtendente() {
         escutarChamados();
-        // Sem essa inscrição, as notificações enviadas via
-        // sendToTopic("atendentes") nunca chegariam a este aparelho.
         FirebaseMessaging.getInstance().subscribeToTopic("atendentes");
     }
 
@@ -171,10 +141,8 @@ public class AdminChamadosActivity extends AppCompatActivity {
                 .show();
     }
 
-    /** Encerra a sessão neste aparelho e volta para a tela de login. */
     private void sairParaLogin(String mensagem) {
         removerListenerChamados();
-        // Para de receber as notificações dos atendimentos neste aparelho.
         FirebaseMessaging.getInstance().unsubscribeFromTopic("atendentes");
         mAuth.signOut();
         abrirTelaDeLogin(mensagem);
@@ -197,13 +165,7 @@ public class AdminChamadosActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * CORREÇÃO: no rascunho original havia só um comentário
-     * "// TODO: Adicionar o ValueEventListener do Firebase Database aqui" —
-     * a lista nunca era carregada de verdade. Implementado abaixo, com os
-     * chamados mais recentes primeiro.
-     */
-    private ValueEventListener listenerChamados; // novo campo na classe
+    private ValueEventListener listenerChamados;
 
     private void escutarChamados() {
         DatabaseReference refChamados = FirebaseDatabase.getInstance().getReference("chamados");
@@ -215,13 +177,6 @@ public class AdminChamadosActivity extends AppCompatActivity {
                     Chamado c = chamadoSnap.getValue(Chamado.class);
                     if (c == null) continue;
 
-                    // CORREÇÃO: um chamado só é válido se tiver id/usuarioId.
-                    // Registros "fantasma" (só com "ultimaMensagem", criados
-                    // por uma escrita que chegou depois de um "Já atendido")
-                    // apareciam como uma linha em branco na lista — e ainda
-                    // derrubavam o app, porque o ChamadosAdapter chama
-                    // chamado.getId().equals(...) direto. Aqui eles são
-                    // ignorados e apagados do banco.
                     if (c.getId() == null || c.getId().trim().isEmpty()
                             || c.getUsuarioId() == null || c.getUsuarioId().trim().isEmpty()) {
                         chamadoSnap.getRef().removeValue();
@@ -231,22 +186,14 @@ public class AdminChamadosActivity extends AppCompatActivity {
                 }
                 Collections.reverse(listaChamados);
 
-                // "Lista vazia" só depois de o Firebase responder (evita piscar
-                // o aviso enquanto ainda está carregando) e some assim que
-                // chegar o primeiro atendimento.
                 tvListaVazia.setVisibility(listaChamados.isEmpty() ? View.VISIBLE : View.GONE);
                 chamadosAdapter.notifyDataSetChanged();
             }
             @Override
             public void onCancelled(DatabaseError error) {
-                // CORREÇÃO: loga o motivo real (ex.: "Permission denied",
-                // que aparece quando as regras publicadas no console do
-                // Firebase são diferentes do database.rules.json local).
                 android.util.Log.e("AdminChamadosActivity",
                         "Erro ao ler 'chamados': " + error.getMessage(), error.toException());
 
-                // Acesso removido em admins/{uid} (ou conta desativada)
-                // enquanto o app estava aberto: encerra a sessão local.
                 if (error.getCode() == DatabaseError.PERMISSION_DENIED
                         && mAuth.getCurrentUser() != null) {
                     sairParaLogin("Seu acesso foi revogado ou a sessão expirou. Entre novamente.");
@@ -266,12 +213,6 @@ public class AdminChamadosActivity extends AppCompatActivity {
         removerListenerChamados();
     }
 
-
-
-    // ---------------------------------------------------------------------
-    // BARRAS DO SISTEMA (status bar / barra de navegação) — ver explicação
-    // completa em AdminChatActivity.aplicarInsetSuperior().
-    // ---------------------------------------------------------------------
 
     private void aplicarInsetSuperior(View view) {
         if (view == null) return;

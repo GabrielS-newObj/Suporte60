@@ -28,21 +28,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-/**
- * Tela de login do atendente (build "server").
- *
- * Cada atendente tem a própria conta (e-mail + senha) no Firebase
- * Authentication. O Firebase guarda a sessão no aparelho, então o login só
- * é pedido uma vez — nada sensível fica dentro do APK.
- *
- * Ser atendente = existir admins/{uid} = true no Realtime Database (as
- * regras em database.rules.json usam isso). Para revogar alguém: apague
- * esse nó (efeito imediato) e, se quiser, desative a conta em
- * Authentication.
- */
 public class LoginAtendenteActivity extends AppCompatActivity {
 
-    /** Mensagem opcional exibida ao chegar aqui (ex.: acesso revogado). */
     public static final String EXTRA_MENSAGEM = "mensagem";
 
     private FirebaseAuth mAuth;
@@ -56,17 +43,11 @@ public class LoginAtendenteActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Tela de fundo claro com cores fixas: evita texto claro sobre fundo
-        // claro quando o aparelho está no modo escuro.
         getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
 
         mAuth = FirebaseAuth.getInstance();
 
-        // Já existe sessão de atendente (ex.: o app foi recriado no meio do
-        // login)? Segue para a fila, que revalida a permissão. Quando vimos
-        // aqui com uma mensagem (sessão acabou de ser encerrada), não
-        // redireciona — evita qualquer chance de laço.
         FirebaseUser atual = mAuth.getCurrentUser();
         if (atual != null && !atual.isAnonymous()
                 && getIntent().getStringExtra(EXTRA_MENSAGEM) == null) {
@@ -133,7 +114,6 @@ public class LoginAtendenteActivity extends AppCompatActivity {
                 });
     }
 
-    /** Confere admins/{uid} para dar o retorno logo aqui, no botão Entrar. */
     private void verificarPermissao(FirebaseUser usuario) {
         FirebaseDatabase.getInstance().getReference("admins").child(usuario.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -200,7 +180,6 @@ public class LoginAtendenteActivity extends AppCompatActivity {
         progressLogin.setVisibility(carregando ? View.VISIBLE : View.GONE);
     }
 
-    /** Respeita barras do sistema e teclado (o app é edge-to-edge). */
     private void aplicarInsets(View root) {
         final int esquerdo = root.getPaddingLeft();
         final int topo = root.getPaddingTop();

@@ -1,5 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
 
 
     <style name="themeLoadingSplash" parent="Theme.Material3.DayNight.NoActionBar">
@@ -14,11 +13,8 @@
 
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <!-- Cor de fundo da Splash do sistema (usamos a mesma cor da sua tela para não piscar) -->
         <item name="windowSplashScreenBackground">@color/deepBlue</item>
-        <!-- Ícone que vai aparecer na tela do sistema -->
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
-        <!-- Qual tema o app deve carregar APÓS a splash do sistema sumir -->
         <item name="postSplashScreenTheme">@style/themeLoadingSplash</item>
     </style>
 
